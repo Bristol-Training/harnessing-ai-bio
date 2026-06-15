@@ -1,0 +1,287 @@
+---
+title: "Using AI Programmatically"
+subtitle: "Driving an LLM from code to analyse many records at once"
+---
+
+::: {.callout-note collapse="true"}
+## Key Takeaways
+
+- A chat window is fine for one-off questions, but an **API** lets you run the same analysis over hundreds or thousands of records "reproducibly"
+- Asking the model for **structured output** (a fixed schema) gives you clean data you can drop straight into a table—no fragile text parsing
+- LLM outputs are **non-deterministic**: the same input can give different labels on different runs, which has real consequences for reproducibility
+- The categories *you* define shape what you can possibly "find"—a methodological choice, not a neutral one
+- Keep API keys out of your notebook: use **Colab Secrets**, never paste keys into cells
+:::
+
+So far you have used AI through a chat interface, one prompt at a time. That is ideal for thinking and drafting, but it does not scale: if you had years of records to analyse, you would not paste them in one by one. This section shows how to drive an LLM *programmatically*—from code—so the same analysis runs over an entire dataset.
+
+::: {.callout-tip}
+# Worked example: TV weather forecasts
+
+[**Download script forecast.py**](./assets/forecast.py)
+
+[**Download dataset weather_world_captions.csv**](./assets/weather_world_captions.csv)
+
+:::
+
+The worked example analyses the captions of **TV weather forecasts**, asking the model to summarise each one, judge its emotional **mood**, and extract any **practical recommendation** to the public. We then look at how the mood shifts across several years. The same pattern—loop over records, ask for structured output, treat the model's judgements as data—applies to abstracts, interview transcripts, field notes, or any text corpus you might meet in research.
+
+::: {.callout-important}
+### University of Bristol AI guidance
+
+Using AI at scale raises the same integrity and data-governance questions as chat use, plus a few of its own: where your data is sent, how outputs are verified, and how the method is reported. Treat model outputs as data to be checked, not facts to be trusted.
+
+[Find more →](./800-resources.qmd)
+:::
+
+
+### Step 1 — Get a Gemini API key
+
+You need a free API key from Google AI Studio.
+
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey) and sign in with a Google account.
+2. Click **Create API key** (you can create it in a new project).
+3. Copy the key—it starts with `AIza...`. **Treat it like a password.** Do not paste it into a notebook cell, share it, or commit it to GitHub.
+
+The free tier is generous enough for this exercise. You do not need to enable billing.
+
+### Step 2 — Store the key safely with Colab Secrets
+
+Colab has a built-in **Secrets** manager so your key never appears in the notebook.
+
+1. In Colab, click the **🔑 key icon** in the left sidebar ("Secrets").
+2. Click **+ Add new secret**.
+3. Name it exactly `GEMINI_API_KEY`.
+4. Paste your `AIza...` key into the **Value** box.
+5. Toggle **Notebook access** to **on**.
+
+The code in Step 4 reads that secret. If you are not on Colab, it falls back to asking you to type the key.
+
+### Step 3 — Install the SDK
+
+The leading `!` runs a shell command from inside the notebook.
+
+```python
+!pip install -q -U google-genai pydantic pandas seaborn
+```
+
+### Step 4 — Load your API key
+
+```python
+import os
+
+# Read the key from Colab Secrets; fall back to a prompt if not on Colab.
+try:
+    from google.colab import userdata
+    os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")
+    print("Loaded GEMINI_API_KEY from Colab Secrets.")
+except Exception:
+    import getpass
+    os.environ["GEMINI_API_KEY"] = getpass.getpass("Paste your Gemini API key: ")
+    print("Loaded GEMINI_API_KEY from prompt.")
+```
+
+Now create the client and run a quick smoke test:
+
+```python
+from google import genai
+
+# The client automatically picks up the GEMINI_API_KEY environment variable.
+client = genai.Client()
+
+resp = client.models.generate_content(
+    model="gemini-3.1-flash-lite",
+    contents="Reply with exactly the word: connected",
+)
+print(resp.text)
+```
+
+If that printed `connected`, your key, the SDK, and your network are all working. If you got an error mentioning the key, re-check Step 2—the secret name must be exactly `GEMINI_API_KEY` and notebook access must be on.
+
+### Step 5 — The data
+
+The captions live in a CSV file, `weather_world_captions.csv`, with three columns: **`date`** (the day the segment aired), **`identifier`** (a stable identifier for each forecast), and **`caption`** (the transcript of the weather segment). The file holds 180 forecasts—the evening *Weather World* bulletin for **every day in June, across six years (2020–2025)**, 30 per year.
+
+Because the month is held fixed, any differences we find across years reflect change *over time* rather than the seasons—so this is a fair basis for asking questions like "are forecasts recommending people stay indoors more often than they used to?"
+
+Download [weather_world_captions.csv](../assets/weather_world_captions.csv) and upload it to your Colab session (drag it into the file browser on the left, or use `Files → Upload`). Then load it:
+
+```python
+import pandas as pd
+
+forecasts = pd.read_csv("weather_world_captions.csv", parse_dates=["date"])
+forecasts.head()
+```
+
+::: {.callout-note}
+## A note on the data
+
+These captions are a **synthetic dataset**, generated to resemble the style of a daily TV weather bulletin (a fictional *Weather World*), with a deliberate drift in tone built in across the six years. 
+
+Because the data is synthetic, treat any "trend" you find as a property of *this dataset*, not a claim about the real world. The point is the method, not the result.
+:::
+
+### Step 6 — Tell the model what to do, and what shape the answer should be
+
+Give the model a **system instruction** (its job description) and define a **structured output schema** with Pydantic. Asking for structured output means the model returns clean JSON you can put straight into a table.
+
+```python
+system_instruction = (
+    "You analyse the captions of TV weather forecasts. "
+    "For each caption: write a very short summary, judge the overall emotional mood "
+    "conveyed to viewers, and extract any practical safety recommendation given to the public."
+)
+```
+
+```python
+from enum import Enum
+from pydantic import BaseModel, Field
+
+
+class Mood(str, Enum):
+    anxious = "anxious"        # alarmed, worried, warning tone
+    neutral = "neutral"        # matter-of-fact, calm
+    reassuring = "reassuring"  # pleasant, comforting tone
+
+
+class Recommendation(str, Enum):
+    stay_indoors = "stay_indoors"
+    keep_cool = "keep_cool"
+    keep_warm = "keep_warm"
+    none = "none"
+
+
+class ForecastAnalysis(BaseModel):
+    summary: str = Field(description="A 4-6 word summary of the forecast")
+    mood: Mood = Field(description="Overall mood conveyed to viewers")
+    recommendation: Recommendation = Field(
+        description="The main practical advice to the public, or 'none' if there is no safety advice"
+    )
+```
+
+### Step 7 — Run the model over every caption
+
+The Gemini SDK gives us one call per item, so we loop over the rows of the dataframe. We pass the schema via `config=` and ask for JSON; the SDK parses the response back into our Pydantic object through `response.parsed`. We carry the `date` and `identifier` through so every result stays linked to its source row.
+
+With 180 forecasts this loop makes 180 API calls and will take a couple of minutes. (In a real project you would add error handling and perhaps a short `time.sleep()` between calls to stay within rate limits.)
+
+```python
+from google.genai import types
+
+results = []
+for row in forecasts.itertuples(index=False):
+    response = client.models.generate_content(
+        model="gemini-3.1-flash-lite",
+        contents=row.caption,
+        config=types.GenerateContentConfig(
+            system_instruction=system_instruction,
+            response_mime_type="application/json",
+            response_schema=ForecastAnalysis,
+        ),
+    )
+    analysis = response.parsed  # a ForecastAnalysis instance
+    results.append(
+        {
+            "date": row.date,
+            "identifier": row.identifier,
+            "caption": row.caption,
+            "summary": analysis.summary,
+            "mood": analysis.mood.value,
+            "recommendation": analysis.recommendation.value,
+        }
+    )
+
+output_data = pd.DataFrame(results)
+output_data.head()
+```
+
+### Step 8 — Compare the years
+
+Now we treat the model's judgements as data. Every forecast is from June, so grouping by year lets us compare like with like: the question is whether the **mood** and the **recommendations** shift from one June to the next.
+
+First, pull the year out of the date:
+
+```python
+output_data["year"] = output_data["date"].dt.year
+```
+
+**Mood by year** — a count of each mood label in each year's 30 forecasts:
+
+```python
+mood_by_year = (
+    output_data
+    .groupby(["year", "mood"])
+    .size()
+    .unstack(fill_value=0)
+)
+mood_by_year
+```
+
+**Recommendations by year** — the same breakdown for the practical advice given:
+
+```python
+rec_by_year = (
+    output_data
+    .groupby(["year", "recommendation"])
+    .size()
+    .unstack(fill_value=0)
+)
+rec_by_year
+```
+
+Now plot the two side by side so you can read the trends together. We use **seaborn**, which expects "long" (tidy) data—one row per count—so we reshape with `melt` first. Each panel shows grouped bars: one bar per category within each year.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.set_theme(style="whitegrid")
+
+# Reshape the per-year counts into long form for seaborn.
+mood_long = mood_by_year.reset_index().melt(
+    id_vars="year", var_name="mood", value_name="count"
+)
+rec_long = rec_by_year.reset_index().melt(
+    id_vars="year", var_name="recommendation", value_name="count"
+)
+
+fig, (ax_mood, ax_rec) = plt.subplots(1, 2, figsize=(14, 5))
+
+sns.barplot(data=mood_long, x="year", y="count", hue="mood", ax=ax_mood)
+ax_mood.set_title("Mood of forecasts by year (June only)")
+ax_mood.set_xlabel("Year")
+ax_mood.set_ylabel("Number of forecasts")
+
+sns.barplot(data=rec_long, x="year", y="count", hue="recommendation", ax=ax_rec)
+ax_rec.set_title("Recommendations by year (June only)")
+ax_rec.set_xlabel("Year")
+ax_rec.set_ylabel("Number of forecasts")
+
+plt.tight_layout()
+plt.show()
+```
+
+Finally, zoom in on the specific question we started with — is "stay indoors" being recommended more often as the years go on?
+
+```python
+stay_indoors_by_year = (
+    output_data[output_data["recommendation"] == "stay_indoors"]
+    .groupby("year")
+    .size()
+)
+print(stay_indoors_by_year)
+```
+
+### Step 9 — Discussion
+
+Talk about these with your group:
+
+- Look at the stay-indoors count across the six years. Is there a **trend**, and does it match what the mood chart shows? Remember the data is synthetic—what would you need before making any real-world claim?
+- The model is **non-deterministic**: run Step 7 again and see whether any labels—and therefore any of the yearly counts—change. What does that imply for reproducibility in research? (You can reduce variation by setting a low `temperature` in `GenerateContentConfig`.)
+- We *defined* the categories (the moods and recommendations). How might that choice shape what we can possibly "find" in the year-on-year comparison?
+
+::: {.callout-warning}
+## Verify before you trust
+
+The model produced clean, confident labels for every row—but confidence is not correctness. Before any of this becomes a result in a write-up, you would spot-check a sample of labels by hand, report how often you agreed, and state that the labels were LLM-generated. The same scrutiny you apply to a chat answer applies, at scale, to every row here.
+:::

@@ -1,0 +1,14 @@
+
+.DS_Store
+
+/.quarto/
+/_site/
+/_freeze/
+/venv/
+
+# pixi environments
+.pixi
+*.egg-info
+
+/.venv/
+.DS_Store

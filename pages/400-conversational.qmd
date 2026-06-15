@@ -1,0 +1,96 @@
+---
+title: "Conversational Learning"
+subtitle: "Using AI as a thinking partner, not just a task executor"
+---
+
+::: {.callout-note collapse="true"}
+## Key Takeaways
+
+- LLMs work best as a **thinking partner** in a back-and-forth conversation, not a one-shot question machine
+- You can steer, correct, and refine outputs across multiple turns within the same session
+- Ask "why" and "how" to understand the reasoning, not just collect outputs
+- LLMs can be **sycophantic** — they may abandon a correct answer when challenged, so verify important claims independently
+- We must guard against learning losses and ensure AI supports intellectual development
+:::
+
+Most people approach AI with a transactional mindset, asking for a summary, a draft, or a quick recommendation. While this produces immediate outputs, it creates a problem: you receive results without insight into the reasoning that produced them. Treating the model as a thinking partner instead—probing its reasoning across several turns—turns each interaction into an opportunity to build transferable research skills.
+
+### Conversational Learning Strategies
+
+#### Iterative Refinement
+
+Rather than trying to write the perfect prompt upfront, start with a reasonable draft and iterate:
+
+1. Get an initial output
+2. Identify what is missing, incorrect, or off in tone
+3. Ask the model to revise specific parts
+4. Repeat until the output is useful
+
+For example, when drafting the methods section of a paper on a qPCR assay, you might get a generic first draft, then ask the model to add the specific cycling conditions, correct its description of your normalisation strategy, and tighten the language—refining across turns rather than rewriting from scratch.
+
+#### Asking for Explanations and Alternatives
+
+Good conversational prompts include:
+
+- *"Why did you recommend that experimental design?"*
+- *"What are the alternatives to this approach?"*
+- *"What are the weaknesses of this argument?"*
+- *"Summarise what we have discussed so far"*
+
+::: {.callout-important}
+### University of Bristol AI guidance
+
+AI should enhance learning and understanding, not shortcut the thinking process. We must "guard against learning losses" and ensure AI supports intellectual development.
+
+[Find more →](./800-resources.qmd)
+:::
+
+#### Challenging the Model
+
+LLMs are often overly agreeable. If a response seems suspicious:
+
+- *"Are you sure about that? Please double-check your reasoning."*
+- *"I've heard conflicting information on this. What is the evidence?"*
+- *"What might a critic of this position say?"*
+
+This matters especially in research, where a plausible-sounding but wrong claim—an invented citation, a misremembered statistic, an over-generalised mechanism—can be costly if accepted uncritically.
+
+::: {.callout-warning}
+## LLMs are not always right—and they can be persuaded
+
+Research shows that LLMs sometimes change their answers when challenged, even when their original answer was correct. This "sycophantic" behaviour means you should verify important claims independently, not simply rely on the model's confidence. When you push back on a research-relevant claim, watch whether the model defends a well-founded position or simply capitulates to please you.
+:::
+
+#### Persona and Role Prompting in Conversation
+
+You can guide the quality and style of a conversation by establishing a role at the outset:
+
+> "For this conversation, act as a critical reviewer assessing my grant proposal for a study on gut microbiome diversity in inflammatory bowel disease. Your job is to find weaknesses and challenge assumptions about my sampling strategy and controls, not just be encouraging."
+
+Then ask your questions within that framing.
+
+---
+
+### Exercise 4: A Guided Conversation
+
+This exercise continues directly from Exercise 3. Do not start a new chat — use the same [duck.ai](https://duck.ai) session where you generated the agenda for the "Reproducible Data Analysis for Bioscientists" workshop.
+
+**Task**: Send each of the following follow-up prompts in turn, reading the response carefully before moving on.
+
+**Prompt 2 — Play devil's advocate:**
+
+> Play devil's advocate with the workshop agenda you just proposed. What could go wrong, and what assumptions have you made that might not hold for a group of bioscience PhD students with mixed coding backgrounds?
+
+**Prompt 3 — Request an alternative:**
+
+> Now give me a completely different version of the agenda that takes a less structured, more informal approach — assume the participants learn better through open discussion of their own datasets than through slides and set activities.
+
+**Prompt 4 — Test consistency:**
+
+> Looking back at both versions of the agenda you proposed, which one do you actually think is better for this audience of early-career bioscientists, and why?
+
+After completing the exercise, consider:
+
+- **Devil's advocate**: Did the model identify genuine weaknesses in its own agenda, or give a superficial critique? Did it flag any assumptions you had not noticed yourself?
+- **Alternative version**: Was the informal agenda meaningfully different, or just a rearrangement of the same content? Did it feel like a real alternative approach?
+- **Consistency**: When asked to pick a side, did the model give a clear, reasoned answer — or try to please you by validating both? This is a good test for *sycophancy*.

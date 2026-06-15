@@ -1,0 +1,137 @@
+---
+title: "Prompting Frameworks"
+---
+
+::: {.callout-note collapse="true"}
+### Key Takeaways
+- High-quality prompts eliminate ambiguity - Clear context upfront gets better responses
+- Use structured frameworks, e.g. the CLEAR framework, to ensure complete prompts
+- Never share sensitive data - No personal records, confidential research, or security information
+:::
+
+
+High-quality prompts that eliminate ambiguity are crucial for getting useful responses from Large Language Models. By providing comprehensive context upfront, you're more likely to receive output that matches your requirements. 
+
+**Scenario:** 
+You have been asked to draft a recruitment call for participants in a bioscience study running at your department.
+
+You write the initial prompt: 
+
+> Write something about recruiting participants.
+
+Problems with this prompt:
+
+- No context about the study, eligibility, or target audience
+- Vague action ("write something")
+- No specifics about format, length, or communication channel
+- No examples of desired output
+- Unclear what type of recruitment content is needed
+
+
+We can use some frameworks to standardize our queries and make sure they are complete and don't forget any relevant details. There's no right or wrong approach — different frameworks may work better for different AI tools and yourself, so use the one that works better for you.
+
+
+### The CLEAR Framework
+
+The CLEAR framework offers a systematic approach to prompt construction that ensures comprehensive communication with AI models.
+
+**Context** - Establish the situation and background
+
+- Explain who you are and what you're working on
+- Provide relevant background information about your project or field
+- Include any important constraints or considerations
+
+**Length** - Define output requirements
+
+- Specify how much content you want (word count, number of items, etc.)
+- Indicate format preferences (paragraphs, bullet points, sections)
+- Include any structural requirements
+
+**Examples** - Illustrate desired outcomes
+
+- Show examples of the style or format you're looking for
+- Provide sample inputs or scenarios when relevant
+- Include both positive examples (what you want) and negative examples (what to avoid)
+
+**Action** - State the specific task
+
+- Clearly articulate what you want the AI to do
+- Use specific action verbs (create, analyze, summarize, compare)
+- Be direct and avoid ambiguous language
+- Focus on one primary task per prompt
+
+**Role** - Define the AI's perspective
+
+- Specify what expertise or viewpoint the AI should adopt
+- Indicate the audience the AI should write for
+- Guide the AI's approach and decision-making framework
+
+A good prompt example using the CLEAR framework:
+
+> **Context:** I am a postgraduate researcher in microbiology running a study on biofilm formation. We need to recruit 30 healthy adult volunteers to provide saliva samples under an approved ethics protocol. Participation involves a single 20-minute visit.  
+> **Length:** Create a 250-350 word recruitment notice with a compelling headline and clear call-to-action.  
+> **Examples:**  
+> - Include a brief, friendly tone: "Help us understand how everyday bacteria form communities."  
+> - Avoid: overly technical jargon or anything that overstates benefits  
+> **Action:** Write a participant recruitment notice to be posted on University noticeboards and student channels.  
+> **Role:** Act as a researcher experienced in ethical participant recruitment who understands how to communicate clearly and avoid coercive or misleading language, while making the study sound interesting and worthwhile.
+
+::: {.callout-important}
+## University of Bristol guidance
+
+Independently of the prompting framework that you are using, never share these with AI tools:
+
+🚫 **Personal data**: Participant records, staff information, health data  
+🚫 **Confidential research**: Unpublished findings, sequences or datasets, grant applications under review  
+🚫 **Commercial sensitive**: Partnership agreements, financial information, IP under patent  
+🚫 **Legal privileged**: Legal advice, disciplinary proceedings  
+🚫 **Security sensitive**: Passwords, system configurations, access credentials
+
+[Find more →](./800-resources.qmd)
+:::
+
+
+<br>
+---
+
+
+
+### Exercise 3: Building Research Prompts
+
+**Scenario**: You're organizing a workshop on "Reproducible Data Analysis for Bioscientists" at the University of Bristol.
+
+**Task**: Use the CLEAR framework to write a prompt in [duck.ai](https://duck.ai) that helps design the workshop agenda.
+
+**Requirements**:
+
+- Use the CLEAR framework
+- Include appropriate constraints
+- Maintain academic integrity
+
+**Reflection Questions**:
+
+- How do your prompts ensure AI enhances rather than replaces your expertise?
+- What verification steps would you take for each output?
+- How would you attribute AI assistance appropriately?
+
+**Don't close the chat session after this exercise**— you will use the same one for Exercise 4 in the next section.
+
+
+::: {.callout-caution collapse="true" icon=false}
+### Solution example
+
+Create a prompt to help design a workshop on "Reproducible Data Analysis for Bioscientists" at the University of Bristol.
+
+> **Context**: I'm a postgraduate researcher at the University of Bristol organizing a "Reproducible Data Analysis for Bioscientists" workshop for fellow PhD students from various bioscience disciplines with mixed coding backgrounds.  
+> **Length**: Create a detailed 3-hour workshop agenda with 15-30 minute segments.  
+> **Examples**: Include interactive elements like hands-on coding activities and small group discussions, similar to effective Carpentries-style workshops.  
+> **Action**: Design an agenda that balances presentation, demonstration, and practice, progressing from basic to advanced concepts (version control, scripted analysis, environments, sharing).  
+> **Role**: Act as an experienced workshop facilitator specializing in research software skills.  
+> **Additional Constraints**:  
+> - Maximum 20 participants to allow for individual attention.  
+> - Must include time for networking and peer learning.  
+> - Consider accessibility needs and different learning styles.  
+> - Include evaluation/feedback collection methods.  
+> - Build in buffer time for technical issues.  
+   
+:::

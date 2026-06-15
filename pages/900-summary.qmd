@@ -1,0 +1,34 @@
+---
+title: "Summary"
+---
+
+Congratulations on completing this course on responsible LLM use in research. You now have the knowledge and tools to:
+
+- Understand LLMs and their limitations
+- Provide effective context while maintaining transparency
+- Engineer prompts that enhance your capabilities
+- Navigate ethical considerations responsibly  
+- Apply University of Bristol policies and guidance to your AI use
+
+
+Successful AI implementation requires ongoing commitment to learning, adaptation, and ethical reflection. The technology will continue to evolve, but our commitment to responsible use must remain constant.
+
+
+::: {.callout-note collapse="true"}
+## Your responsible AI checklist
+
+Before using an AI tool for any significant research task:
+
+1. ✅ **Verify**: Do not act on specific facts, citations, or statistics without independent verification against the primary literature
+2. ✅ **Protect privacy**: Do not submit personal, participant, or unpublished data without checking the tool's privacy policy and University guidance
+3. ✅ **Maintain oversight**: You are responsible for every output you share or act on — review carefully
+4. ✅ **Be transparent**: Attribute AI assistance where your context, journal, or funder requires it
+5. ✅ **Consider the human dimension**: Would the people affected feel respected by this use of AI?
+6. ✅ **Think proportionately**: Is the task genuinely worth the energy, privacy, and relational costs involved?
+:::
+
+
+
+<br>
+
+*Good luck, and use AI thoughtfully.*
