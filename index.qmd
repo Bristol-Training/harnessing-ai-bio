@@ -1,0 +1,59 @@
+---
+title: "Introduction"
+---
+
+
+
+Welcome to this training course on the responsible use of Artificial Intelligence (AI) in postgraduate research.
+
+The term Artificial Intelligence refers to computer systems that can perform tasks typically requiring human intelligence, such as understanding language, recognizing patterns, and making decisions. While the AI field has many years of research and development behind it, today's increased popularity is largely driven by generative AI models—systems that can create new content like text, images, and code based on the patterns they've learned from vast amounts of data. You've probably heard of and used tools like ChatGPT, Copilot, and Claude—here we'll learn how to use them effectively in your research and in compliance with University of Bristol guidance.
+
+This course is designed for **postgraduate students in the biosciences**. Throughout, the examples, exercises, and scenarios are framed around the realities of bioscience research—literature reviews, experimental design, data analysis, writing up, and the particular integrity and data-protection responsibilities that come with research involving biological data, human participants, and unpublished findings.
+
+::: {.callout-important}
+### University of Bristol AI guidance
+
+This course is built on the foundation of the University's commitment to responsible AI use. Our approach emphasizes:
+
+- **Transparency**: Being open about when and how AI is used
+- **Critical Thinking**: Using AI to support, not replace, intellectual rigor
+- **Academic and Professional Integrity**: Maintaining the highest standards of work
+- **Ethical Considerations**: Being mindful of bias, privacy, and environmental impact
+
+[Find more →](./pages/800-resources.qmd)
+:::
+
+::: {.callout-tip}
+### Hands-on tool for this course: 🦆 duck.ai
+
+Many sections include short **warm-up activities** and exercises you can run yourself using [duck.ai](https://duck.ai)—a privacy-respecting interface to several LLMs provided by DuckDuckGo, which does not retain your conversations or use them for model training. This makes it a sensible default for learning and experimentation. For research tasks involving any confidential or personal data, follow the University of Bristol guidance on approved tools covered later in the course.
+:::
+
+
+### Learning Objectives
+By the end of this course, you will be able to:
+
+- Understand what LLMs are and their key capabilities and limitations
+- Apply responsible practices when using AI tools in your research
+- Craft effective prompts that enhance rather than replace critical thinking
+- Navigate ethical considerations including bias, privacy, and environmental impact
+- Implement University of Bristol policies and guidelines in your AI usage
+- Recognise where AI can be used programmatically in a research workflow
+
+
+
+### About this course
+
+These course materials have been designed and developed by  **Pau Erola, PhD** (Jean Golding Institute, University of Bristol).
+
+Thanks to Huw Day for his feedback and recommendations on ethics and environmental impact. Thanks to Leo Gorman, Will Chapman, Rita Rasteiro, Richard Lane, James Thomas and Patricia Holley for their valuable comments and corrections.
+
+This course uses [duck.ai](https://duck.ai) as the hands-on AI tool for warm-up activities and exercises—a privacy-respecting interface to LLMs provided by DuckDuckGo, which does not retain your conversations or use them for model training.
+
+We used the enhancement of AI in alignment with our institutional guidance:
+
+- **Microsoft Copilot (GPT-4 & GPT-5)**-- Generation of synthetic datasets, documents and examples
+- **Claude (Sonnet 4)** -- Writing assistance, examples generation
+- **ChatGPT (GPT-5)** -- Generation of figures
+
+For queries related to this course please contact [jgi-training@bristol.ac.uk](mailto:jgi-training@bristol.ac.uk).
